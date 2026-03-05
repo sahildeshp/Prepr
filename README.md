@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prepr — Weekly Meal Prep Planner
+
+A single-purpose web app that generates a personalised weekly meal plan and exports it as a formatted `.docx` file.
+
+Fill in a short form → get a structured plan → download a ready-to-use Word document.
+
+---
+
+## Features
+
+- **Smart meal generation** — powered by Claude (Anthropic API)
+- **Customisable preferences** — plan length (3/5/6 days), proteins, carbs, dietary restrictions, and flavour profile
+- **Structured output** — each day includes macros, ingredients, cooking instructions, and a tonight's prep note
+- **Sunday prep guide** — what to chop and pre-cook to set the week up
+- **Full grocery list** — organised by category, ready to print or shop from
+- **One-click `.docx` download** — professionally formatted, ready to use
+
+---
+
+## Tech Stack
+
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 14 (App Router) |
+| Styling | Tailwind CSS |
+| AI | Anthropic API (claude-sonnet) |
+| Docx | `docx` npm package |
+| Deployment | Vercel |
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/sahildeshp/Prepr.git
+cd Prepr
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up environment variables
+
+```bash
+cp .env.example .env.local
+```
+
+Then add your Anthropic API key to `.env.local`:
+
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+Get a key at [console.anthropic.com](https://console.anthropic.com).
+
+### 4. Run the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+meal-prep-planner/
+├── app/
+│   ├── page.tsx                  # Home / form
+│   ├── plan/
+│   │   └── page.tsx              # Preview & edit plan
+│   ├── api/
+│   │   ├── generate/route.ts     # POST: call Claude, return plan JSON
+│   │   └── download/route.ts     # POST: receive plan JSON, return .docx
+│   └── layout.tsx
+├── components/
+│   ├── PlanForm.tsx
+│   ├── PlanPreview.tsx
+│   ├── DayCard.tsx
+│   └── MacrosBar.tsx
+├── lib/
+│   ├── generatePlan.ts           # Claude API call + prompt construction
+│   ├── buildDocx.ts              # Full .docx generation logic
+│   └── types.ts                  # TypeScript types
+└── .env.example
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Deploy to Vercel in one click:
 
-## Deploy on Vercel
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Add `ANTHROPIC_API_KEY` as an environment variable in the Vercel dashboard before deploying.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Roadmap
+
+- **Phase 1** — Core flow: form → generate → preview → download *(in progress)*
+- **Phase 2** — Editable meals: regenerate individual day cards before downloading
+- **Phase 3** — Auth + saved plans (NextAuth + Supabase)
+- **Phase 4** — Shareable plan links
