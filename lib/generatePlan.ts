@@ -84,11 +84,15 @@ Respond with this exact JSON structure:
 async function callClaude(input: FormInput): Promise<MealPlan> {
   const message = await client.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 4000,
+    max_tokens: 8000,
     system:
       "You are a meal planning assistant. You create weekly meal plans that are practical, healthy, high-protein, and delicious. You always respond with valid JSON only — no explanation, no markdown.",
     messages: [{ role: "user", content: buildPrompt(input) }],
   });
+
+  if (message.stop_reason === "max_tokens") {
+    throw new Error("Response was truncated — retrying");
+  }
 
   const text =
     message.content[0].type === "text" ? message.content[0].text : "";
