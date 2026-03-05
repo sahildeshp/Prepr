@@ -29,56 +29,8 @@ Rules:
 - Shrimp and fish must always be cooked fresh the day before eating, never on Sunday
 - Eggs should always be cooked fresh, never pre-cooked days in advance
 
-Respond with this exact JSON structure:
-
-{
-  "days": [
-    {
-      "day": "Monday",
-      "mealName": "Teriyaki Chicken & Broccoli with Rice",
-      "protein": "Chicken thighs",
-      "carb": "Jasmine rice",
-      "vegetables": "Broccoli + edamame",
-      "fruit": "Strawberries or blueberries",
-      "macros": {
-        "calories": "520 kcal",
-        "protein": 44,
-        "carbs": 46,
-        "fat": 12
-      },
-      "ingredients": [
-        "750g boneless skinless chicken thighs (total for ${input.servings} servings)",
-        "..."
-      ],
-      "cookingInstructions": [
-        "Step one...",
-        "..."
-      ],
-      "tonightPrep": [
-        "What to prep tonight for tomorrow...",
-        "..."
-      ]
-    }
-  ],
-  "sundayPrep": {
-    "chopAndStore": [
-      "Chop all vegetables...",
-      "..."
-    ],
-    "cookTonight": [
-      "Cook the chicken...",
-      "..."
-    ]
-  },
-  "groceryList": {
-    "proteins": ["item", "..."],
-    "carbsAndGrains": ["item", "..."],
-    "vegetables": ["item", "..."],
-    "freshProduce": ["item", "..."],
-    "fruits": ["item", "..."],
-    "pantryAndCondiments": ["item", "..."]
-  }
-}`;
+Return JSON with this exact shape — no extra keys, no prose:
+{ "days": [{ "day", "mealName", "protein", "carb", "vegetables", "fruit", "macros": { "calories": "Xkcal", "protein": N, "carbs": N, "fat": N }, "ingredients": [...], "cookingInstructions": [...], "tonightPrep": [...] }], "sundayPrep": { "chopAndStore": [...], "cookTonight": [...] }, "groceryList": { "proteins": [...], "carbsAndGrains": [...], "vegetables": [...], "freshProduce": [...], "fruits": [...], "pantryAndCondiments": [...] } }`;
 }
 
 async function callClaude(input: FormInput): Promise<MealPlan> {
@@ -86,7 +38,7 @@ async function callClaude(input: FormInput): Promise<MealPlan> {
     model: "claude-sonnet-4-6",
     max_tokens: 8000,
     system:
-      "You are a meal planning assistant. You create weekly meal plans that are practical, healthy, high-protein, and delicious. You always respond with valid JSON only — no explanation, no markdown.",
+      "You are a meal planning assistant. You create weekly meal plans that are practical, healthy, high-protein, and delicious. You always respond with valid JSON only — no explanation, no markdown. Be concise: keep ingredient lines under 12 words, cooking steps under 25 words each.",
     messages: [{ role: "user", content: buildPrompt(input) }],
   });
 
